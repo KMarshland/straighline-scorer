@@ -15,5 +15,11 @@
         display: block;
       }
     }
+
+    .analysis-progress {
+      .analysis-progress-item {
+        white-space: nowrap;
+      }
+    }
   }
 }

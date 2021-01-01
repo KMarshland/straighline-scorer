@@ -1,6 +1,10 @@
 import './settings.scss';
 import { Component } from 'preact';
 import store from '../../state/store.js';
+import PropTypes from 'prop-types';
+import AnalysisProgress from './analysis_progress.js';
+import AnalysisInterface from '../../state/analysis_interface.js';
+import AnalysisResults from './analysis_results.js';
 
 export default class Settings extends Component {
 
@@ -43,9 +47,25 @@ export default class Settings extends Component {
                 Will be displayed in purple
 
                 <hr />
+
+                <button onClick={AnalysisInterface.analyze}>
+                    Start analysis
+                </button>
+
+                <AnalysisProgress
+                    analysisProgress={this.props.analysisProgress}
+                />
+
+                <hr />
+
+                <AnalysisResults analysis={this.props.analysis} />
             </div>
         );
     }
 
 }
 
+Settings.propTypes = {
+    analysisProgress: PropTypes.object.isRequired,
+    analysis: PropTypes.object.isRequired
+}
