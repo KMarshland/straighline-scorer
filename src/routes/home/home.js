@@ -3,6 +3,7 @@ import './home.scss';
 import PathViewer from '../../components/path_viewer/path_viewer.js';
 import Settings from '../../components/settings/settings.js';
 import store from '../../state/store.js';
+import AnalysisInterface from '../../state/analysis_interface.js';
 
 const Home = (props) => (
 	<div class="home">
@@ -24,5 +25,16 @@ const HomeWithStore = () => (
 		<ConnectedHome />
 	</Provider>
 );
+
+const toExpose = {
+	store,
+	AnalysisInterface
+};
+
+for (let [key, value] of Object.entries(toExpose)) {
+	window[key] = value;
+}
+
+AnalysisInterface.analyze();
 
 export default HomeWithStore;

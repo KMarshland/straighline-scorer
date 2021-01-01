@@ -29,3 +29,5 @@ For detailed explanation on how things work, checkout the [CLI Readme](https://g
 
 ## License
 MIT
+
+Distance calculations adapted from https://www.cqsrg.org/tools/GCDistance/ by Mike Turnbull and Chris Veness.
