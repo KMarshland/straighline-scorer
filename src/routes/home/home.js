@@ -1,4 +1,4 @@
-import style from './style.css';
+import style from './home.scss';
 import CesiumViewer from '../../components/cesium/cesium_viewer.js';
 
 const Home = () => (
