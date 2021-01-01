@@ -42,6 +42,26 @@ export default class PathViewer extends Component {
                     width: 3,
                     clampToGround: true,
                 },
+            },
+            {
+                id: "gps-track-line",
+                name: "GPS Track",
+                polyline: {
+                    positions: {
+                        cartographicDegrees: this.props.gpsTrack.map(({ latitude, longitude }) =>
+                            [longitude, latitude, 0]
+                        ).flat(),
+                    },
+                    material: {
+                        solidColor: {
+                            color: {
+                                rgba: [255, 0, 255, 255],
+                            },
+                        },
+                    },
+                    width: 3,
+                    clampToGround: true,
+                },
             }
         ]);
 
