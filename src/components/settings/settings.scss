@@ -2,10 +2,15 @@
   .settings {
     padding: 16px;
     text-align: center;
+    font-size: 14px;
+
+    .coordinates-container {
+      input {
+        width: 80px;
+      }
+    }
 
     label {
-      font-size: 14px;
-
       input {
         display: block;
       }

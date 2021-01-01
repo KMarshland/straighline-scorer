@@ -1,14 +1,17 @@
 import { Provider, connect } from 'react-redux';
 import './home.scss';
-import CesiumViewer from '../../components/cesium/cesium_viewer.js';
+import PathViewer from '../../components/path_viewer/path_viewer.js';
 import Settings from '../../components/settings/settings.js';
 import store from '../../state/store.js';
 
-const Home = ({ beans }) => (
+const Home = (props) => (
 	<div class="home">
-		<CesiumViewer />
+		<PathViewer
+			gpsTrack={props.gpsTrack}
+			targetLine={props.targetLine}
+		/>
 
-		<Settings />
+		<Settings {...props} />
 	</div>
 );
 
