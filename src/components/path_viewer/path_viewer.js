@@ -84,7 +84,6 @@ export default class PathViewer extends Component {
             for (let coord of cartographicDegrees) {
                 if (isNaN(coord)) {
                     valid = false;
-                    console.log(this.props.targetLine);
                     break;
                 }
             }
@@ -92,6 +91,32 @@ export default class PathViewer extends Component {
             if (valid) {
                 czml.push({
                     id: "target-line",
+                    polyline: {
+                        positions: {
+                            cartographicDegrees
+                        }
+                    },
+                })
+            }
+        }
+
+        if (prevProps.gpsTrack !== this.props.gpsTrack) {
+            const cartographicDegrees = this.props.gpsTrack.map(({ latitude, longitude }) =>
+                [longitude, latitude, 0]
+            ).flat();
+
+            let valid = true;
+
+            for (let coord of cartographicDegrees) {
+                if (isNaN(coord)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                czml.push({
+                    id: "gps-track-line",
                     polyline: {
                         positions: {
                             cartographicDegrees
