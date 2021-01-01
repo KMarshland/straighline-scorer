@@ -1,4 +1,13 @@
-.home {
-	min-height: 100%;
-	width: 100%;
+:global {
+  .home {
+    margin-top: 56px;
+    width: 100%;
+    height: calc(100vh - 56px);
+    display: flex;
+
+    .cesium-viewer-container {
+      height: 100%;
+      flex-grow: 1;
+    }
+  }
 }

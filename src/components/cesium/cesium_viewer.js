@@ -10,13 +10,15 @@ export default class CesiumViewer extends Component {
 
     componentDidMount() {
         this.viewer = new window.Cesium.Viewer(this._id, {
-            terrainProvider: window.Cesium.createWorldTerrain()
+            terrainProvider: window.Cesium.createWorldTerrain(),
+            timeline: false,
+            animation: false
         });
     }
 
     render() {
         return (
-            <div id={this._id} />
+            <div className="cesium-viewer-container" id={this._id} />
         );
     }
 
