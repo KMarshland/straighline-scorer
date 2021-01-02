@@ -3,7 +3,8 @@ const RESET_ANALYSIS_ON = new Set([
     'SET_START_LATITUDE',
     'SET_START_LONGITUDE',
     'SET_END_LATITUDE',
-    'SET_END_LONGITUDE'
+    'SET_END_LONGITUDE',
+    'SET_GPS_TRACK'
 ]);
 
 export default function AnalysisReducer(state, action) {

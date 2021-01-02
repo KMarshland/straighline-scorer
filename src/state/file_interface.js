@@ -22,8 +22,8 @@ export default class FileInterface {
     }
 
     static readKML(text) {
-        let parser = new DOMParser()
-        let xmlDoc = parser.parseFromString(text, "text/xml")
+        const parser = new DOMParser()
+        const xmlDoc = parser.parseFromString(text, "text/xml")
 
         let coordinates = [];
 
@@ -44,7 +44,25 @@ export default class FileInterface {
     }
 
     static readGPX(text) {
+        const parser = new DOMParser()
+        const xmlDoc = parser.parseFromString(text, "text/xml")
 
+        let coordinates = [];
+
+        try {
+            const points = xmlDoc.querySelectorAll('trkseg trkpt');
+            for (let point of points) {
+                coordinates.push({
+                    latitude: parseFloat(point.getAttribute('lat')),
+                    longitude: parseFloat(point.getAttribute('lon'))
+                });
+            }
+        } catch (e) {
+            alert('Failed to parse GPS track');
+            throw e;
+        }
+
+        FileInterface.loadCoordinates(coordinates);
     }
 
     static loadCoordinates(coordinates) {
