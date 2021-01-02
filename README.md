@@ -1,6 +1,6 @@
 # straightline-scorer
 
-This is a tool for analyzing how straight a straighline mission (as pioneered by Tom Davies) is.
+This is a tool for analyzing how straight a straightline mission (as pioneered by Tom Davies) is.
 For more information, see the about page.
 
 This tool is built with Cesium, Preact, and lots and lots of javascript. 

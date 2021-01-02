@@ -4,7 +4,7 @@ export default function About(){
     return (
         <div class={style.about}>
             <p>
-                <h2>What is a straighline mission?</h2>
+                <h2>What is a straightline mission?</h2>
 
                 Pioneered by <a href="https://www.youtube.com/c/GeoWizard" target="_blank" rel="noopener noreferrer">Tom Davies aka GeoWizard</a>,
                 straightline missions are attempt to cross a region in as straight a line as possible.
@@ -66,6 +66,11 @@ export default function About(){
                 <h3>Technical notes</h3>
                 <ul>
                     <li>
+                        No data is stored on the server; when you click upload, it's actually just doing all the data
+                        processing locally.
+                    </li>
+
+                    <li>
                         This uses the WGS84 model of the earth in all places. The WGS84 model models the earth as an
                         oblate spheroid, rather than as a perfect sphere, and is the industry-standard.
                     </li>
@@ -78,10 +83,11 @@ export default function About(){
                     </li>
 
                     <li>
-                        The smoothing algorithm used is a Gaussian filter with sigma=1.
-                        For the convolution, it uses reflection of the signal at the edges.
-                        That said, I'm not super happy with this filtering algorithm.
-                        It might be worth trying an angle-based filter.
+                        The smoothing algorithm used is a Gaussian filter with sigma=1, and for the convolution, it uses
+                        reflection of the signal at the edges. However, this only does the convolution in 1d on the
+                        coordinates directly, so probably isn't very good. Since I'm not super happy with this filtering
+                        algorithm in general, I'm not going to worry about it since it'll likely be replaced with an
+                        angle-based filter.
                     </li>
 
                     <li>
