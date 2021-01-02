@@ -20,10 +20,6 @@ const Home = (props) => {
 		AnalysisInterface.analyze();
 	}, []);
 
-	if (typeof window === 'undefined') {
-		return null;
-	}
-
 	return (
 		<div class="home">
 			<PathViewer

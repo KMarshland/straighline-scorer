@@ -1,6 +1,6 @@
 export default function AnalysisReducer(state, action) {
     if (state === undefined) {
-        state = {};
+        state = null;
     }
 
     if (action.type === 'SET_ANALYSIS') {
@@ -8,7 +8,7 @@ export default function AnalysisReducer(state, action) {
     }
 
     if (action.type === 'START_ANALYSIS') {
-        state = {};
+        state = null;
     }
 
     return state;

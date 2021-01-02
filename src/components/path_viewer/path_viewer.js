@@ -2,14 +2,8 @@ import { Component } from 'preact';
 
 export default class PathViewer extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this._id = `cesium-viewer-${Math.random().toString(36).slice(2)}`
-    }
-
     componentDidMount() {
-        this.viewer = new window.Cesium.Viewer(this._id, {
+        this.viewer = new window.Cesium.Viewer('path-viewer', {
             terrainProvider: window.Cesium.createWorldTerrain(),
             timeline: false,
             animation: false
@@ -138,7 +132,7 @@ export default class PathViewer extends Component {
 
     render() {
         return (
-            <div className="cesium-viewer-container" id={this._id} />
+            <div className="cesium-viewer-container" id="path-viewer" />
         );
     }
 

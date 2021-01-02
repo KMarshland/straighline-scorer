@@ -28,5 +28,5 @@ export default class Sidebar extends Component {
 Sidebar.propTypes = {
     targetLine: PropTypes.object.isRequired,
     analysisProgress: PropTypes.object.isRequired,
-    analysis: PropTypes.object.isRequired
+    analysis: PropTypes.object
 }

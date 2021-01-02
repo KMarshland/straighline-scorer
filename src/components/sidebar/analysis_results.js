@@ -1,4 +1,4 @@
-import { Component } from 'preact';
+import { Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import AnalysisInterface from '../../state/analysis_interface.js';
 
@@ -6,7 +6,7 @@ export default class AnalysisResults extends Component {
 
     render() {
         const { analysis } = this.props;
-        const { maxDeviation, trackVsLineDistance } = analysis;
+        const { maxDeviation, trackVsLineDistance } = analysis || {};
 
         return (
             <div class="analysis-results">
@@ -14,13 +14,18 @@ export default class AnalysisResults extends Component {
                     Results
                 </h2>
 
-                <div>
-                    Max deviation: {maxDeviation.toFixed(1)}m
-                </div>
+                {
+                    analysis &&
+                    <Fragment>
+                        <div>
+                            Max deviation: {maxDeviation.toFixed(1)}m
+                        </div>
 
-                <div>
-                    Line vs track distance: {trackVsLineDistance.percent.toFixed(1)}% ({trackVsLineDistance.lineDistance.toFixed()}m / {trackVsLineDistance.trackDistance.toFixed()}m)
-                </div>
+                        <div>
+                            Line vs track distance: {trackVsLineDistance.percent.toFixed(1)}% ({trackVsLineDistance.lineDistance.toFixed()}m / {trackVsLineDistance.trackDistance.toFixed()}m)
+                        </div>
+                    </Fragment>
+                }
 
                 <div class="analysis-button-container">
                     <button onClick={AnalysisInterface.analyze}>
@@ -34,5 +39,5 @@ export default class AnalysisResults extends Component {
 }
 
 AnalysisResults.propTypes = {
-    analysis: PropTypes.object.isRequired
+    analysis: PropTypes.object
 }
