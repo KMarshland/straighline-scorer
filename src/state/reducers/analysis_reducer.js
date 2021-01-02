@@ -1,3 +1,11 @@
+const RESET_ANALYSIS_ON = new Set([
+    'START_ANALYSIS',
+    'SET_START_LATITUDE',
+    'SET_START_LONGITUDE',
+    'SET_END_LATITUDE',
+    'SET_END_LONGITUDE'
+]);
+
 export default function AnalysisReducer(state, action) {
     if (state === undefined) {
         state = null;
@@ -7,7 +15,7 @@ export default function AnalysisReducer(state, action) {
         state = action.analysis;
     }
 
-    if (action.type === 'START_ANALYSIS') {
+    if (RESET_ANALYSIS_ON.has(action.type)) {
         state = null;
     }
 

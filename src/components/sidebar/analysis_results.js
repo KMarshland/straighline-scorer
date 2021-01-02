@@ -18,7 +18,7 @@ export default class AnalysisResults extends Component {
                     analysis &&
                     <Fragment>
                         <div>
-                            Max deviation: {maxDeviation.toFixed(1)}m
+                            Max deviation: {maxDeviation.toFixed(2)}m
                         </div>
 
                         <div>

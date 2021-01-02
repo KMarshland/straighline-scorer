@@ -45,28 +45,43 @@ export default function About(){
                     </li>
 
                     <li>
-                        Line distance divided by total distance.
-                        The closer this is to one, the better: if you wander lots, your distance traveled will be longer, whereas the line distance won't have changed.
-                    </li>
-
-                    <li>
-                        Line distance divided by total distance, with smoothing.
-                        This is just like the previous metric, except it applies a smoothing algorithm to get rid of GPS jitter.
-                    </li>
-
-                    <li>
-                        Total area divided by line distance.
-                        This finds the area between the line you went and your target line (using Euler's method with a 1m resolution), then divides it by your target line distance.
+                        Area-weighted deviation.
+                        This finds the area between the line you went and your target line, then divides it by your target line distance.
                         The closer to zero this is the better.
                     </li>
 
                     <li>
-                        Total area divided by line distance, with smoothing.
-                        This is just like the previous metric, except it applies a smoothing algorithm to get rid of GPS jitter.
+                        Line vs track distance.
+                        This takes line distance as a percentage of total distance of your GPS track.
+                        If you followed the line perfectly, this will be 100%.
+                        If you made lots of zig-zags, this will be close to 0%.
+                        A big caveat here is that if you didn't complete the line, this value is meaningless.
                     </li>
                 </ul>
 
-                The smoothing algorithm used is a Gaussian filter with sigma=1, using reflection of the signal in the convolution at the edges.
+                Additionally, it applies a smoothing algorithm and calculates these same metrics a second time. This
+                smoothing algorithm can be useful for getting rid of GPS jitter, but it also risks your scores looking
+                better than they are in reality.
+
+                <h3>Technical notes</h3>
+                <ul>
+                    <li>
+                        This uses the WGS84 model of the earth in all places. The WGS84 model models the earth as an
+                        oblate spheroid, rather than as a perfect sphere, and is the industry-standard.
+                    </li>
+
+                    <li>
+                        For calculating distances between points, it uses the
+                        <a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf ">Vincenty inverse formula</a>, which has
+                        a resolution of approximately 0.5mm. However, for efficiency reasons, when calculating
+                        deviations from the line, it only finds the closest point on the line to the nearest centimeter.
+                    </li>
+
+                    <li>
+                        The smoothing algorithm used is a Gaussian filter with sigma=1.
+                        For the convolution, it uses reflection of the signal at the edges.
+                    </li>
+                </ul>
             </p>
 
             <p>
