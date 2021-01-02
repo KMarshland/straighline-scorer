@@ -176,14 +176,7 @@ export default class AnalysisInterface {
         let area = 0;
 
         for (let i = 1; i < deviations.length; i++) {
-            const rectangle = Cesium.Rectangle.fromCartographicArray([
-                deviations[i - 1].pointOnLine,
-                deviations[i - 1].pointOnTrack,
-                deviations[i].pointOnLine,
-                deviations[i].pointOnTrack
-            ].map(toCartographic));
-
-            area += Cesium.Ellipsoid.WGS84.surfaceArea(rectangle);
+            area += AnalysisInterface.calculateArea(deviations[i - 1], deviations[i]);
 
             AnalysisInterface.updateProgress({
                 step,
@@ -359,6 +352,41 @@ export default class AnalysisInterface {
         coord2 = toCartographic(coord2);
 
         return new Cesium.EllipsoidGeodesic(coord1, coord2);
+    }
+
+    /**
+     * Calculates the area between a pair of deviations
+     * Averages the areas of the two rectangles defined by the two deviations
+     * The error introduced by just taking the bigger of the two is small but noticeable:
+     * 1451 m^2 with averaging and 1475 m^2 without averaging in my test case
+     *
+     * @param {{ distance: number, pointOnLine: Object, pointOnTrack: Object }} deviationA
+     * @param {{ distance: number, pointOnLine: Object, pointOnTrack: Object }} deviationB
+     * @return {Number}
+     */
+    static calculateArea(deviationA, deviationB) {
+        const rectangleA = Cesium.Rectangle.fromCartographicArray([
+            deviationA.pointOnLine,
+            deviationA.pointOnTrack,
+            deviationB.pointOnLine,
+            AnalysisInterface.geodesicEllipsoid(
+                deviationB.pointOnLine, deviationB.pointOnTrack
+            ).interpolateUsingSurfaceDistance(deviationA.distance)
+        ].map(toCartographic));
+
+        const rectangleB = Cesium.Rectangle.fromCartographicArray([
+            deviationA.pointOnLine,
+            AnalysisInterface.geodesicEllipsoid(
+                deviationA.pointOnLine, deviationA.pointOnTrack
+            ).interpolateUsingSurfaceDistance(deviationB.distance),
+            deviationB.pointOnLine,
+            deviationB.pointOnTrack
+        ].map(toCartographic));
+
+        const areaA = Cesium.Ellipsoid.WGS84.surfaceArea(rectangleA);
+        const areaB = Cesium.Ellipsoid.WGS84.surfaceArea(rectangleB);
+
+        return (areaA + areaB)/2;
     }
 
     /**
