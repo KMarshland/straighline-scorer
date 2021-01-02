@@ -11,6 +11,7 @@ export default function TargetLineReducer(state, action) {
         //         longitude: -105.574308
         //     }
         // };
+
         state = {
             start: {
                 latitude: 35.811251,
@@ -19,7 +20,8 @@ export default function TargetLineReducer(state, action) {
             end: {
                 latitude: 35.810726,
                 longitude: -106.203782
-            }
+            },
+            dirty: false
         };
     }
 
@@ -27,7 +29,8 @@ export default function TargetLineReducer(state, action) {
         state = Object.assign({}, state, {
             start: Object.assign({}, state.start, {
                 latitude: action.value
-            })
+            }),
+            dirty: true
         });
     }
 
@@ -35,7 +38,8 @@ export default function TargetLineReducer(state, action) {
         state = Object.assign({}, state, {
             start: Object.assign({}, state.start, {
                 longitude: action.value
-            })
+            }),
+            dirty: true
         });
     }
 
@@ -43,7 +47,8 @@ export default function TargetLineReducer(state, action) {
         state = Object.assign({}, state, {
             end: Object.assign({}, state.end, {
                 latitude: action.value
-            })
+            }),
+            dirty: true
         });
     }
 
@@ -51,8 +56,16 @@ export default function TargetLineReducer(state, action) {
         state = Object.assign({}, state, {
             end: Object.assign({}, state.end, {
                 longitude: action.value
-            })
+            }),
+            dirty: true
         });
+    }
+
+    if (action.type === 'SET_GPS_TRACK' && !state.dirty) {
+        state = {
+            start: action.coordinates[0],
+            end: action.coordinates[action.coordinates.length - 1]
+        }
     }
 
     return state;

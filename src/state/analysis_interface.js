@@ -71,6 +71,10 @@ export default class AnalysisInterface {
 
         const { targetLine, gpsTrack } = store.getState();
 
+        if (gpsTrack.length < 2) {
+            return;
+        }
+
         const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
         const lineDistance = ellipsoid.surfaceDistance;
 

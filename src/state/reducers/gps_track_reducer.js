@@ -19,5 +19,9 @@ export default function GPSTrackReducer(state, action) {
         }
     }
 
+    if (action.type === 'SET_GPS_TRACK') {
+        state = action.coordinates;
+    }
+
     return state;
 }

@@ -3,8 +3,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import store from '../../state/store.js';
 import PropTypes from 'prop-types';
+import FileInterface from '../../state/file_interface.js';
 
 export default class Configuration extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.onGPSTrackChange = this.onGPSTrackChange.bind(this);
+    }
+
+    onGPSTrackChange(event) {
+        const files = event.target.files;
+        if (!files.length) {
+            return;
+        }
+
+        const file = files[0];
+        FileInterface.readFile(file);
+    }
 
     render() {
         return (
@@ -36,7 +53,11 @@ export default class Configuration extends Component {
                 <div class="upload-container">
                     <label class="btn">
                         <FontAwesomeIcon icon={faUpload} /> Upload a GPS Track
-                        <input type="file" />
+                        <input
+                            type="file"
+                            accept=".kml,.kmz,.gpx"
+                            onChange={this.onGPSTrackChange}
+                        />
                     </label>
                 </div>
 
