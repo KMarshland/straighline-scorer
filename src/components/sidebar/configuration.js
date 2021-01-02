@@ -1,4 +1,6 @@
 import { Component } from 'preact';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import store from '../../state/store.js';
 import PropTypes from 'prop-types';
 
@@ -33,7 +35,7 @@ export default class Configuration extends Component {
 
                 <div class="upload-container">
                     <label class="btn">
-                        Upload a GPS Track
+                        <FontAwesomeIcon icon={faUpload} /> Upload a GPS Track
                         <input type="file" />
                     </label>
                 </div>
