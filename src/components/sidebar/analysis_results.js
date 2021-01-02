@@ -6,7 +6,7 @@ export default class AnalysisResults extends Component {
 
     render() {
         const { analysis } = this.props;
-        const { maxDeviation, trackVsLineDistance } = analysis || {};
+        const { maxDeviation, areaWeightedDeviation, trackVsLineDistance } = analysis || {};
 
         return (
             <div class="analysis-results">
@@ -19,6 +19,9 @@ export default class AnalysisResults extends Component {
                     <Fragment>
                         <div>
                             Max deviation: {maxDeviation.toFixed(2)}m
+                        </div>
+                        <div>
+                            Area-weighted deviation: {areaWeightedDeviation.weightedDeviation.toFixed(2)}m ({areaWeightedDeviation.area.toFixed()}m<sup>2</sup>)
                         </div>
 
                         <div>

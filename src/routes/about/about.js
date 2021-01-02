@@ -71,8 +71,8 @@ export default function About(){
                     </li>
 
                     <li>
-                        For calculating distances between points, it uses the
-                        <a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf ">Vincenty inverse formula</a>, which has
+                        For calculating distances between points, it uses
+                        the <a href="http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf" target="_blank" rel="noopener noreferrer">Vincenty inverse formula</a>, which has
                         a resolution of approximately 0.5mm. However, for efficiency reasons, when calculating
                         deviations from the line, it only finds the closest point on the line to the nearest centimeter.
                     </li>
@@ -81,14 +81,21 @@ export default function About(){
                         The smoothing algorithm used is a Gaussian filter with sigma=1.
                         For the convolution, it uses reflection of the signal at the edges.
                     </li>
+
+                    <li>
+                        To calculate area, a series of polygons are described by taking, for each GPS track point, the
+                        point, the closest point on the line, the previous GPS track point, and the closest point on the
+                        line to that point. The areas of these are calculated via Gauss-Legendre 10th order quadratures
+                        and the areas are summed.
+                    </li>
                 </ul>
             </p>
 
             <p>
                 <h2>This tool was written by Kai Marshland</h2>
                 The code is open-source and MIT-licensed; view it at <a href="https://github.com/KMarshland/straightline-scorer" target="_blank" rel="noopener noreferrer">
-                    https://github.com/KMarshland/straightline-scorer
-                </a>. Pull requests welcome!
+                https://github.com/KMarshland/straightline-scorer
+            </a>. Pull requests welcome!
             </p>
 
             <p>

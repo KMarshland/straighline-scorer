@@ -2,8 +2,23 @@
 // parameters from https://en.wikipedia.org/wiki/World_Geodetic_System#Defining_Parameters
 import store from './store.js';
 
+/**
+ * @param {{ latitude: number, longitude: number }|Cesium.Cartographic} coord
+ * @return {Cesium.Cartographic}
+ */
+function toCartographic(coord) {
+    if (!(coord instanceof Cesium.Cartographic)) {
+        coord = new Cesium.Cartographic.fromDegrees(coord.longitude, coord.latitude, 0);
+    }
+
+    return coord;
+}
+
 export default class AnalysisInterface {
 
+    /**
+     * Run all analyses, getting inputs from the store and pushing results back to the store again
+     */
     static analyze() {
         store.dispatch({
             type: 'START_ANALYSIS'
@@ -11,13 +26,26 @@ export default class AnalysisInterface {
 
         const { targetLine, gpsTrack } = store.getState();
 
+        const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
+        const lineDistance = ellipsoid.surfaceDistance;
+
         const deviations = AnalysisInterface.calculateDeviations({ gpsTrack, targetLine }, {
-            step: 'Analyze distances (unsmoothed)'
+            step: 'Calculate deviations (unsmoothed)'
         });
 
-        const analysis = {};
-        analysis.maxDeviation = AnalysisInterface.calculateMaxDeviation(deviations);
-        analysis.trackVsLineDistance = AnalysisInterface.calculateTrackVsLineDistance({ gpsTrack, targetLine }, {
+        const analysis = {
+            lineDistance
+        };
+
+        analysis.maxDeviation = AnalysisInterface.calculateMaxDeviation(deviations, {
+            step: 'Analyze max deviation (unsmoothed)'
+        });
+
+        analysis.areaWeightedDeviation = AnalysisInterface.calculateAreaWeightedDeviation(deviations, lineDistance, {
+            step: 'Analyze area-weighted deviation (unsmoothed)'
+        });
+
+        analysis.trackVsLineDistance = AnalysisInterface.calculateTrackVsLineDistance(gpsTrack, lineDistance, {
             step: 'Analyze track vs line distance (unsmoothed)'
         });
 
@@ -28,20 +56,75 @@ export default class AnalysisInterface {
     }
 
     /**
+     * Find the maximum deviation from the line
      *
      * @param {Array<{ distance: number }>} deviations
+     * @param {String} step
      * @return {Number}
      */
-    static calculateMaxDeviation(deviations) {
+    static calculateMaxDeviation(deviations, { step }) {
+        AnalysisInterface.updateProgress({
+            step,
+            numerator: 0,
+            denominator: deviations.length
+        });
+
         let maxDeviation = 0;
 
-        for (let {distance} of deviations) {
+        for (let i = 0; i < deviations.length; i++) {
+            const {distance} = deviations[i];
             if (distance > maxDeviation) {
                 maxDeviation = distance;
             }
+
+            AnalysisInterface.updateProgress({
+                step,
+                numerator: i + 1,
+                denominator: deviations.length
+            });
         }
 
         return maxDeviation;
+    }
+
+    /**
+     * Find the maximum deviation from the line
+     *
+     * @param {Array<{ distance: number }>} deviations
+     * @param {Number} lineDistance
+     * @param {String} step
+     * @return {{ area: number, weightedDeviation: number }}
+     */
+    static calculateAreaWeightedDeviation(deviations, lineDistance, { step }) {
+        AnalysisInterface.updateProgress({
+            step,
+            numerator: 0,
+            denominator: deviations.length - 1
+        });
+
+        let area = 0;
+
+        for (let i = 1; i < deviations.length; i++) {
+            const rectangle = Cesium.Rectangle.fromCartographicArray([
+                deviations[i - 1].pointOnLine,
+                deviations[i - 1].pointOnTrack,
+                deviations[i].pointOnLine,
+                deviations[i].pointOnTrack
+            ].map(toCartographic));
+
+            area += Cesium.Ellipsoid.WGS84.surfaceArea(rectangle);
+
+            AnalysisInterface.updateProgress({
+                step,
+                numerator: i,
+                denominator: deviations.length - 1
+            });
+        }
+
+        return {
+            area,
+            weightedDeviation: area/lineDistance
+        }
     }
 
     /**
@@ -52,7 +135,7 @@ export default class AnalysisInterface {
      * @param {Array<{ latitude: number, longitude: number }>} gpsTrack
      * @param {{ start: { latitude: number, longitude: number }, end: { latitude: number, longitude: number } }} targetLine
      * @param {String} step
-     * @return {Array<{ distance: number }>}
+     * @return {Array<{ distance: number, pointOnLine: Object, pointOnTrack: Object }>}
      */
     static calculateDeviations({ gpsTrack, targetLine }, { step }) {
         const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
@@ -127,13 +210,11 @@ export default class AnalysisInterface {
      * Analyzes how far you went vs how long the line was
      *
      * @param {Array<{ latitude: number, longitude: number }>} gpsTrack
-     * @param {{ start: { latitude: number, longitude: number }, end: { latitude: number, longitude: number } }} targetLine
+     * @param {Number} lineDistance
      * @param {String} step
      * @return {{lineDistance: number, percent: number, trackDistance: number}}
      */
-    static calculateTrackVsLineDistance({ gpsTrack, targetLine }, { step }) {
-        const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
-
+    static calculateTrackVsLineDistance(gpsTrack, lineDistance, { step }) {
         const denominator = gpsTrack.length - 1
 
         AnalysisInterface.updateProgress({
@@ -152,8 +233,6 @@ export default class AnalysisInterface {
                 denominator
             });
         }
-
-        const lineDistance = ellipsoid.surfaceDistance;
 
         return {
             lineDistance,
@@ -205,16 +284,10 @@ export default class AnalysisInterface {
      * @return {Cesium.EllipsoidGeodesic}
      */
     static geodesicEllipsoid(coord1, coord2) {
-        if (!(coord1 instanceof Cesium.Cartographic)) {
-            coord1 = new Cesium.Cartographic.fromDegrees(coord1.longitude, coord1.latitude, 0);
-        }
-
-        if (!(coord2 instanceof Cesium.Cartographic)) {
-            coord2 = new Cesium.Cartographic.fromDegrees(coord2.longitude, coord2.latitude, 0);
-        }
+        coord1 = toCartographic(coord1);
+        coord2 = toCartographic(coord2);
 
         return new Cesium.EllipsoidGeodesic(coord1, coord2);
     }
-
 }
 
