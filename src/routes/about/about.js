@@ -80,6 +80,8 @@ export default function About(){
                     <li>
                         The smoothing algorithm used is a Gaussian filter with sigma=1.
                         For the convolution, it uses reflection of the signal at the edges.
+                        That said, I'm not super happy with this filtering algorithm.
+                        It might be worth trying an angle-based filter.
                     </li>
 
                     <li>

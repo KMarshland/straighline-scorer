@@ -14,6 +14,51 @@ function toCartographic(coord) {
     return coord;
 }
 
+function gaussianKernel1D(sigma, order, radius) {
+    if (order !== 0) {
+        throw new Error('Non-zero orders not yet supported');
+    }
+
+    const kernel = [];
+    let total = 0;
+    for (let x = -radius; x <= radius; x++) {
+        kernel[radius + x] = Math.exp(-0.5/(sigma**2) * x**2);
+        total += kernel[radius + x];
+    }
+
+    for (let i = 0; i < kernel.length; i++) {
+        kernel[i] /= total;
+    }
+
+    return kernel;
+}
+
+function convolve1D(input, weights) {
+    const result = [];
+    for (let i = 0; i < input.length; i++) {
+        let sum = 0;
+
+        for (let j = 0; j < weights.length; j++) {
+            let index = i-Math.floor(weights.length/2)+j;
+            if (index < 0) index = Math.abs(index) - 1;
+            if (index >= input.length) index = input.length - 1;
+
+            sum += input[index]*weights[j];
+        }
+
+        result[i] = sum;
+    }
+    return result;
+}
+
+function gaussianFilter(data, sigma=1) {
+    const order = 0;
+    const truncate = 2;
+    const lw = Math.floor(truncate * sigma + 0.5);
+    const weights = gaussianKernel1D(sigma, order, lw);
+    return convolve1D(data, weights);
+}
+
 export default class AnalysisInterface {
 
     /**
@@ -49,7 +94,7 @@ export default class AnalysisInterface {
             step: 'Analyze track vs line distance (unsmoothed)'
         });
 
-        const smoothedTrack = gpsTrack;
+        const smoothedTrack = AnalysisInterface.smoothLine(gpsTrack);
         store.dispatch({
             type: 'SET_SMOOTHED_GPS_TRACK',
             smoothedTrack
@@ -310,6 +355,27 @@ export default class AnalysisInterface {
         coord2 = toCartographic(coord2);
 
         return new Cesium.EllipsoidGeodesic(coord1, coord2);
+    }
+
+    /**
+     * Smoothes a line
+     *
+     * @param {Array<{ latitude: number, longitude: number }>} coordinates
+     * @return {Array<{ latitude: number, longitude: number }>}
+     */
+    static smoothLine(coordinates) {
+        const latitudes = gaussianFilter(coordinates.map(({ latitude }) => latitude));
+        const longitudes = gaussianFilter(coordinates.map(({ longitude }) => longitude));
+
+        const smoothed = [];
+        for (let i = 0; i < coordinates.length; i++) {
+            smoothed.push({
+                latitude: latitudes[i],
+                longitude: longitudes[i]
+            })
+        }
+
+        return smoothed;
     }
 }
 

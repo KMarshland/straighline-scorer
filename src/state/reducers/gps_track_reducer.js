@@ -11,6 +11,12 @@ export default function GPSTrackReducer(state, action) {
                     latitude: parseFloat(coordinate.split(',')[1])
                 }
             });
+
+        // randomize slightly so we can test smoothing
+        for (let i = 1; i < state.length - 1; i++) {
+            state[i].latitude  += (Math.random() - 0.5)*0.00005;
+            state[i].longitude += (Math.random() - 0.5)*0.00005;
+        }
     }
 
     return state;
