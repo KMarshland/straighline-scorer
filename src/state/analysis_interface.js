@@ -123,6 +123,14 @@ export default class AnalysisInterface {
         return deviations;
     }
 
+    /**
+     * Analyzes how far you went vs how long the line was
+     *
+     * @param {Array<{ latitude: number, longitude: number }>} gpsTrack
+     * @param {{ start: { latitude: number, longitude: number }, end: { latitude: number, longitude: number } }} targetLine
+     * @param {String} step
+     * @return {{lineDistance: number, percent: number, trackDistance: number}}
+     */
     static calculateTrackVsLineDistance({ gpsTrack, targetLine }, { step }) {
         const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
 
