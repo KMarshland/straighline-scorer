@@ -1,5 +1,6 @@
 import { Component } from 'preact';
 import PropTypes from 'prop-types';
+import AnalysisInterface from '../../state/analysis_interface.js';
 
 export default class AnalysisProgress extends Component {
 

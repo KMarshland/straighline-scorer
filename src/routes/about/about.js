@@ -45,12 +45,12 @@ export default function About(){
                     </li>
 
                     <li>
-                        Total distance divided by line distance.
+                        Line distance divided by total distance.
                         The closer this is to one, the better: if you wander lots, your distance traveled will be longer, whereas the line distance won't have changed.
                     </li>
 
                     <li>
-                        Total distance divided by line distance, with smoothing.
+                        Line distance divided by total distance, with smoothing.
                         This is just like the previous metric, except it applies a smoothing algorithm to get rid of GPS jitter.
                     </li>
 

@@ -1,14 +1,24 @@
 
 export default function TargetLineReducer(state, action) {
     if (state === undefined) {
+        // state = {
+        //     start: {
+        //         latitude: 35.695562,
+        //         longitude: -105.934755
+        //     },
+        //     end: {
+        //         latitude: 36.407109,
+        //         longitude: -105.574308
+        //     }
+        // };
         state = {
             start: {
-                latitude: 35.695562,
-                longitude: -105.934755
+                latitude: 35.811251,
+                longitude: -106.202149
             },
             end: {
-                latitude: 36.407109,
-                longitude: -105.574308
+                latitude: 35.810726,
+                longitude: -106.203782
             }
         };
     }

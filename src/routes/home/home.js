@@ -1,9 +1,9 @@
 import { Provider, connect } from 'react-redux';
 import './home.scss';
-import PathViewer from '../../components/path_viewer/path_viewer.js';
-import Settings from '../../components/settings/settings.js';
-import store from '../../state/store.js';
 import AnalysisInterface from '../../state/analysis_interface.js';
+import store from '../../state/store.js';
+import PathViewer from '../../components/path_viewer/path_viewer.js';
+import Sidebar from '../../components/sidebar/sidebar.js';
 
 const Home = (props) => (
 	<div class="home">
@@ -12,7 +12,7 @@ const Home = (props) => (
 			targetLine={props.targetLine}
 		/>
 
-		<Settings {...props} />
+		<Sidebar {...props} />
 	</div>
 );
 

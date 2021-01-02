@@ -1,0 +1,73 @@
+:global {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+
+    .text-center {
+      text-align: center;
+    }
+
+    button {
+      box-shadow: none;
+      cursor: pointer;
+
+      user-select: none;
+      border: 1px solid #007bff;
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: .25rem;
+      transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+      color: #fff;
+      background-color: #007bff;
+    }
+
+    .configuration {
+      padding: 16px 16px 32px;
+      text-align: center;
+      font-size: 14px;
+
+      h2 {
+        margin: 0 0 10px;
+      }
+
+      .coordinates-container {
+        input {
+          width: 80px;
+        }
+      }
+
+      label {
+        input {
+          display: block;
+        }
+      }
+    }
+
+    .analysis-results {
+      background: #673AB7;
+      color: white;
+      padding: 16px 16px 32px;
+
+      h2 {
+        text-align: center;
+        margin: 0;
+      }
+
+      .analysis-button-container {
+        margin-top: 16px;
+        text-align: center;
+      }
+    }
+
+    .analysis-progress {
+      padding: 16px;
+      font-size: 14px;
+
+      .analysis-progress-item {
+        white-space: nowrap;
+      }
+    }
+  }
+}

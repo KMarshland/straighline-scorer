@@ -11,12 +11,15 @@ export default class AnalysisInterface {
 
         const { targetLine, gpsTrack } = store.getState();
 
-        const deviations = AnalysisInterface.calculateDeviations({ gpsTrack,targetLine }, {
+        const deviations = AnalysisInterface.calculateDeviations({ gpsTrack, targetLine }, {
             step: 'Analyze distances (unsmoothed)'
         });
 
         const analysis = {};
         analysis.maxDeviation = AnalysisInterface.calculateMaxDeviation(deviations);
+        analysis.trackVsLineDistance = AnalysisInterface.calculateTrackVsLineDistance({ gpsTrack, targetLine }, {
+            step: 'Analyze track vs line distance (unsmoothed)'
+        });
 
         store.dispatch({
             type: 'SET_ANALYSIS',
@@ -118,6 +121,37 @@ export default class AnalysisInterface {
         }
 
         return deviations;
+    }
+
+    static calculateTrackVsLineDistance({ gpsTrack, targetLine }, { step }) {
+        const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
+
+        const denominator = gpsTrack.length - 1
+
+        AnalysisInterface.updateProgress({
+            step,
+            numerator: 0,
+            denominator
+        });
+
+        let trackDistance = 0;
+        for (let i = 1; i < gpsTrack.length; i++) {
+            trackDistance += AnalysisInterface.geodesicEllipsoid(gpsTrack[i], gpsTrack[i - 1]).surfaceDistance;
+
+            AnalysisInterface.updateProgress({
+                step,
+                numerator: i,
+                denominator
+            });
+        }
+
+        const lineDistance = ellipsoid.surfaceDistance;
+
+        return {
+            lineDistance,
+            trackDistance,
+            percent: 100*lineDistance/trackDistance
+        }
     }
 
     /**
