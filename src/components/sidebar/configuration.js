@@ -9,39 +9,38 @@ export default class Configuration extends Component {
             <div class="configuration">
                 <h2>Configuration</h2>
 
-                <div>
-                    Target line
-
+                <div class="goal-container">
                     <div class="coordinates-container">
-                        Start <input
-                            value={this.props.targetLine.start.latitude}
-                            onChange={(e) => store.dispatch({ type: 'SET_START_LATITUDE', value: e.target.value })}
-                        />, <input
-                            value={this.props.targetLine.start.longitude}
-                            onChange={(e) => store.dispatch({ type: 'SET_START_LONGITUDE', value: e.target.value })}
-                        />
+                        <span>Start</span> <input
+                        value={this.props.targetLine.start.latitude}
+                        onChange={(e) => store.dispatch({ type: 'SET_START_LATITUDE', value: e.target.value })}
+                    />, <input
+                        value={this.props.targetLine.start.longitude}
+                        onChange={(e) => store.dispatch({ type: 'SET_START_LONGITUDE', value: e.target.value })}
+                    />
                     </div>
 
                     <div class="coordinates-container">
-                        End <input
-                            value={this.props.targetLine.end.latitude}
-                            onChange={(e) => store.dispatch({ type: 'SET_END_LATITUDE', value: e.target.value })}
-                        />, <input
-                            value={this.props.targetLine.end.longitude}
-                            onChange={(e) => store.dispatch({ type: 'SET_END_LONGITUDE', value: e.target.value })}
-                        />
+                        <span>End</span> <input
+                        value={this.props.targetLine.end.latitude}
+                        onChange={(e) => store.dispatch({ type: 'SET_END_LATITUDE', value: e.target.value })}
+                    />, <input
+                        value={this.props.targetLine.end.longitude}
+                        onChange={(e) => store.dispatch({ type: 'SET_END_LONGITUDE', value: e.target.value })}
+                    />
                     </div>
-
                 </div>
 
-                <hr />
+                <div class="upload-container">
+                    <label class="btn">
+                        Upload a GPS Track
+                        <input type="file" />
+                    </label>
+                </div>
 
-                <label>
-                    Upload a GPS Track
-                    <input type="file" />
-                </label>
-
-                Will be displayed in purple
+                <div>
+                    Target Yellow / GPS Track Magenta / Smoothed Purple
+                </div>
             </div>
         );
     }

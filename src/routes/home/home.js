@@ -24,6 +24,7 @@ const Home = (props) => {
 		<div class="home">
 			<PathViewer
 				gpsTrack={props.gpsTrack}
+				smoothedGPSTrack={props.smoothedGPSTrack}
 				targetLine={props.targetLine}
 			/>
 

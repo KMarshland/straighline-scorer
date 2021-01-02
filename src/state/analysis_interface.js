@@ -29,13 +29,13 @@ export default class AnalysisInterface {
         const ellipsoid = AnalysisInterface.geodesicEllipsoid(targetLine.start, targetLine.end);
         const lineDistance = ellipsoid.surfaceDistance;
 
-        const deviations = AnalysisInterface.calculateDeviations({ gpsTrack, targetLine }, {
-            step: 'Calculate deviations (unsmoothed)'
-        });
-
         const analysis = {
             lineDistance
         };
+
+        const deviations = AnalysisInterface.calculateDeviations({ gpsTrack, targetLine }, {
+            step: 'Calculate deviations (unsmoothed)'
+        });
 
         analysis.maxDeviation = AnalysisInterface.calculateMaxDeviation(deviations, {
             step: 'Analyze max deviation (unsmoothed)'
@@ -47,6 +47,28 @@ export default class AnalysisInterface {
 
         analysis.trackVsLineDistance = AnalysisInterface.calculateTrackVsLineDistance(gpsTrack, lineDistance, {
             step: 'Analyze track vs line distance (unsmoothed)'
+        });
+
+        const smoothedTrack = gpsTrack;
+        store.dispatch({
+            type: 'SET_SMOOTHED_GPS_TRACK',
+            smoothedTrack
+        });
+
+        const smoothedDeviations = AnalysisInterface.calculateDeviations({ gpsTrack: smoothedTrack, targetLine }, {
+            step: 'Calculate deviations (smoothed)'
+        });
+
+        analysis.smoothedMaxDeviation = AnalysisInterface.calculateMaxDeviation(smoothedDeviations, {
+            step: 'Analyze max deviation (smoothed)'
+        });
+
+        analysis.smoothedAreaWeightedDeviation = AnalysisInterface.calculateAreaWeightedDeviation(smoothedDeviations, lineDistance, {
+            step: 'Analyze area-weighted deviation (smoothed)'
+        });
+
+        analysis.smoothedTrackVsLineDistance = AnalysisInterface.calculateTrackVsLineDistance(smoothedTrack, lineDistance, {
+            step: 'Analyze track vs line distance (smoothed)'
         });
 
         store.dispatch({

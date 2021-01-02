@@ -38,6 +38,26 @@ export default class PathViewer extends Component {
                 },
             },
             {
+                id: "smoothed-gps-track-line",
+                name: "Smoothed GPS Track",
+                polyline: {
+                    positions: {
+                        cartographicDegrees: this.props.smoothedGPSTrack.map(({ latitude, longitude }) =>
+                            [longitude, latitude, 0]
+                        ).flat(),
+                    },
+                    material: {
+                        solidColor: {
+                            color: {
+                                rgba: [103, 58, 183, 255],
+                            },
+                        },
+                    },
+                    width: 3,
+                    clampToGround: true,
+                },
+            },
+            {
                 id: "gps-track-line",
                 name: "GPS Track",
                 polyline: {
@@ -67,12 +87,7 @@ export default class PathViewer extends Component {
     componentDidUpdate(prevProps) {
         let czml = [];
 
-        if (prevProps.targetLine !== this.props.targetLine) {
-            const cartographicDegrees = [
-                parseFloat(this.props.targetLine.start.longitude), parseFloat(this.props.targetLine.start.latitude), 0,
-                parseFloat(this.props.targetLine.end.longitude), parseFloat(this.props.targetLine.end.latitude), 0
-            ];
-
+        const checkAndAddCoords = (cartographicDegrees, id) => {
             let valid = true;
 
             for (let coord of cartographicDegrees) {
@@ -84,7 +99,7 @@ export default class PathViewer extends Component {
 
             if (valid) {
                 czml.push({
-                    id: "target-line",
+                    id,
                     polyline: {
                         positions: {
                             cartographicDegrees
@@ -94,30 +109,29 @@ export default class PathViewer extends Component {
             }
         }
 
+        if (prevProps.targetLine !== this.props.targetLine) {
+            const cartographicDegrees = [
+                parseFloat(this.props.targetLine.start.longitude), parseFloat(this.props.targetLine.start.latitude), 0,
+                parseFloat(this.props.targetLine.end.longitude), parseFloat(this.props.targetLine.end.latitude), 0
+            ];
+
+            checkAndAddCoords(cartographicDegrees, 'target-line');
+        }
+
         if (prevProps.gpsTrack !== this.props.gpsTrack) {
             const cartographicDegrees = this.props.gpsTrack.map(({ latitude, longitude }) =>
                 [longitude, latitude, 0]
             ).flat();
 
-            let valid = true;
+            checkAndAddCoords(cartographicDegrees, 'gps-track-line');
+        }
 
-            for (let coord of cartographicDegrees) {
-                if (isNaN(coord)) {
-                    valid = false;
-                    break;
-                }
-            }
+        if (prevProps.smoothedGPSTrack !== this.props.smoothedGPSTrack) {
+            const cartographicDegrees = this.props.smoothedGPSTrack.map(({ latitude, longitude }) =>
+                [longitude, latitude, 0]
+            ).flat();
 
-            if (valid) {
-                czml.push({
-                    id: "gps-track-line",
-                    polyline: {
-                        positions: {
-                            cartographicDegrees
-                        }
-                    },
-                })
-            }
+            checkAndAddCoords(cartographicDegrees, 'smoothed-gps-track-line');
         }
 
         if (czml.length) {
